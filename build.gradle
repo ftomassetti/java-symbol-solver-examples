@@ -1,0 +1,13 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile 'me.tomassetti:java-symbol-solver-core:0.2'
+    testCompile 'junit:junit:latest.release'
+}
+
