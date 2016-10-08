@@ -3,6 +3,11 @@ buildscript {
 
    repositories {
      mavenCentral()
+     maven {
+       name 'JFrog OSS snapshot repo'
+       url  'https://oss.jfrog.org/oss-snapshot-local/'
+     }
+     jcenter()
    }
 
    dependencies {
@@ -11,21 +16,24 @@ buildscript {
 }
 
 apply plugin: 'kotlin'
+apply plugin: 'application'
 apply plugin: 'java'
 apply plugin: 'idea'
+apply plugin: 'antlr'
 
 repositories {
+    mavenLocal()
     mavenCentral()
     jcenter()
 }
 
 dependencies {
-    compile 'me.tomassetti:java-symbol-solver-core:0.4'
+    compile "me.tomassetti:java-symbol-solver-core:0.3"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
-    testCompile 'junit:junit:latest.release'
+    testCompile "junit:junit:latest.release"
 }
 
 idea {
@@ -33,4 +41,3 @@ idea {
         excludeDirs += file('src/main/resources')
     }
 }
-
