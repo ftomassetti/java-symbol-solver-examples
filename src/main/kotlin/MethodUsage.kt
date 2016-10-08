@@ -11,8 +11,8 @@ import java.io.File
 fun typeSolver() : TypeSolver {
     val combinedTypeSolver = CombinedTypeSolver()
     combinedTypeSolver.add(JreTypeSolver())
-    combinedTypeSolver.add(JavaParserTypeSolver(File("src/test/resources/javaparser-core")))
-    combinedTypeSolver.add(JavaParserTypeSolver(File("src/test/resources/javaparser-generated-sources")))
+    combinedTypeSolver.add(JavaParserTypeSolver(File("src/main/resources/javaparser-core")))
+    combinedTypeSolver.add(JavaParserTypeSolver(File("src/main/resources/javaparser-generated-sources")))
     return combinedTypeSolver
 }
 
@@ -43,10 +43,22 @@ class DirExplorer(private val filter: DirExplorer.Filter, private val fileHandle
 
 }
 
+var ok = 0
+var ko = 0
+
 fun processJavaFile(file: File, javaParserFacade: JavaParserFacade) {
     println(file)
     JavaParser.parse(file).descendantsOfType(MethodCallExpr::class.java).forEach {
-        println(" * $it ${javaParserFacade.solve(it)}")
+        println(" * $it ")
+        try {
+            println("  -> ${javaParserFacade.solve(it).correspondingDeclaration.name}")
+            ok++
+            println("OK $ok KO $ko")
+        } catch (e: Exception) {
+            println("ERR ${e.message}")
+            ko++
+            println("OK $ok KO $ko")
+        }
     }
 }
 
@@ -54,4 +66,5 @@ fun main(args:Array<String>) {
     val javaFiles = findJavaFiles(File("src/main/resources/javaparser-core"))
     val javaParserFacade = JavaParserFacade.get(typeSolver())
     javaFiles.forEach { processJavaFile(it, javaParserFacade) }
+    println("OK $ok KO $ko")
 }
