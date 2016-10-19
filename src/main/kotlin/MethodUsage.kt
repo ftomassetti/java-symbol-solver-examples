@@ -43,21 +43,29 @@ class DirExplorer(private val filter: DirExplorer.Filter, private val fileHandle
 
 }
 
-var ok = 0
-var ko = 0
+var solved = 0
+var unsolved = 0
+var errors = 0
 
 fun processJavaFile(file: File, javaParserFacade: JavaParserFacade) {
     println(file)
     JavaParser.parse(file).descendantsOfType(MethodCallExpr::class.java).forEach {
-        println(" * $it ")
+        print(" * L${it.begin.line} $it ")
         try {
-            println("  -> ${javaParserFacade.solve(it).correspondingDeclaration.name}")
-            ok++
-            println("OK $ok KO $ko")
+            val methodRef = javaParserFacade.solve(it)
+            if (methodRef.isSolved) {
+                solved++
+                val methodDecl = methodRef.correspondingDeclaration
+                println("  -> ${methodDecl.qualifiedSignature}")
+            } else {
+                unsolved++
+                println(" ???")
+            }
         } catch (e: Exception) {
-            println("ERR ${e.message}")
-            ko++
-            println("OK $ok KO $ko")
+            println(" ERR ${e.message}")
+            errors++
+        } catch (t: Throwable) {
+            t.printStackTrace()
         }
     }
 }
@@ -66,5 +74,5 @@ fun main(args:Array<String>) {
     val javaFiles = findJavaFiles(File("src/main/resources/javaparser-core"))
     val javaParserFacade = JavaParserFacade.get(typeSolver())
     javaFiles.forEach { processJavaFile(it, javaParserFacade) }
-    println("OK $ok KO $ko")
+    println("solved $solved unsolved $unsolved errors $errors")
 }
