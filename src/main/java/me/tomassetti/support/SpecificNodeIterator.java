@@ -4,7 +4,7 @@ import com.github.javaparser.ast.Node;
 
 public class SpecificNodeIterator<T> {
     public interface NodeHandler<T> {
-        boolean handle(Node T);
+        boolean handle(T node);
     }
 
     private NodeHandler nodeHandler;
@@ -17,9 +17,9 @@ public class SpecificNodeIterator<T> {
 
     public void explore(Node node) {
         if (type.isInstance(node)) {
-            //if (!nodeHandler.handle(type.cast(node))) {
+            if (!nodeHandler.handle(type.cast(node))) {
                 return;
-            //}
+            }
         }
         for (Node child : node.getChildrenNodes()) {
             explore(child);
