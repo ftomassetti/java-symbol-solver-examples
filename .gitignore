@@ -3,6 +3,7 @@ java-symbol-solver-examples.iml
 java-symbol-solver-examples.ipr
 java-symbol-solver-examples.iws
 *.class
+classes/*
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
